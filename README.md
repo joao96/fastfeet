@@ -4,7 +4,7 @@
 </h1>
 
 <h4 align="center">
-  A delivery service application with a full stack approach.
+  A delivery service application with a full stack approack implementing a Rest API on the backend.
 </h4>
 
 <p align="center">
