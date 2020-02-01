@@ -10,21 +10,13 @@ class RecipientController {
       complement: Yup.string().required(),
       state: Yup.string().required(),
       city: Yup.string().required(),
-      zipcode: Yup.string().required(),
+      zipcode: Yup.string()
+        .length(8)
+        .required(),
     });
 
     if (!(await schema.isValid(req.body))) {
       return res.status(400).json({ error: 'Validation failed.' });
-    }
-
-    // tem campo único? se sim, qual é? por enquanto é o name
-
-    const recipientExists = await Recipient.findOne({
-      where: { name: req.body.name },
-    });
-
-    if (recipientExists) {
-      return res.status(400).json({ error: 'Recipient already exists.' });
     }
 
     const {
