@@ -2,6 +2,17 @@ import * as Yup from 'yup';
 import Deliveryman from '../models/Deliveryman';
 
 class DeliverymanController {
+  async index(req, res) {
+    const { page = 1 } = req.query;
+    const deliverymen = await Deliveryman.findAll({
+      limit: 20,
+      offset: (page - 1) * 20,
+      attributes: ['id', 'name', 'email', 'avatar_id'],
+    });
+
+    return res.json(deliverymen);
+  }
+
   async store(req, res) {
     const schema = Yup.object().shape({
       name: Yup.string().required(),
@@ -61,6 +72,22 @@ class DeliverymanController {
       name,
       email,
       avatar_id,
+    });
+  }
+
+  async delete(req, res) {
+    const { id } = req.params;
+
+    const deliveryman = await Deliveryman.findByPk(id);
+
+    if (!deliveryman) {
+      return res.status(400).json({ error: 'Deliveryman does not exists.' });
+    }
+
+    await deliveryman.destroy();
+
+    return res.json({
+      message: `Deliveryman ${deliveryman.name} was successfully deleted.`,
     });
   }
 }

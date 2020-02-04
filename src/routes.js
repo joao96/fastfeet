@@ -24,10 +24,10 @@ routes.put('/users', UserController.update);
 routes.post('/recipients', RecipientController.store);
 routes.put('/recipients/:id', RecipientController.update);
 
-// routes.get('/deliveryman', DeliverymanController.index);
+routes.get('/deliveryman', DeliverymanController.index);
 routes.post('/deliveryman', DeliverymanController.store);
 routes.put('/deliveryman/:id', DeliverymanController.update);
-// routes.delete('/deliveryman/:id', DeliverymanController.delete);
+routes.delete('/deliveryman/:id', DeliverymanController.delete);
 
 routes.post('/files', upload.single('file'), FileController.store);
 
