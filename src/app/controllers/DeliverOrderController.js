@@ -1,8 +1,34 @@
 import * as Yup from 'yup';
 import { parseISO, isBefore } from 'date-fns';
+import { Op } from 'sequelize';
 import Order from '../models/Order';
 
 class DeliverOrderController {
+  async index(req, res) {
+    const { page = 1 } = req.query;
+    const { id } = req.params;
+
+    const deliveredOrders = await Order.findAll({
+      where: {
+        deliveryman_id: id,
+        end_date: {
+          [Op.ne]: null,
+        },
+      },
+      limit: 20,
+      offset: (page - 1) * 20,
+      attributes: [
+        'id',
+        'product',
+        'end_date',
+        'recipient_id',
+        'deliveryman_id',
+        'signature_id',
+      ],
+    });
+    return res.json(deliveredOrders);
+  }
+
   async update(req, res) {
     const schema = Yup.object().shape({
       end_date: Yup.date().required(),
@@ -25,6 +51,12 @@ class DeliverOrderController {
     if (!order.start_date) {
       return res.status(401).json({
         error: "You can't deliver this item without withdrawing it first.",
+      });
+    }
+
+    if (order.cancelled_at) {
+      return res.status(401).json({
+        error: 'This order was already cancelled.',
       });
     }
 

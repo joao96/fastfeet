@@ -1,12 +1,39 @@
-import Order from '../models/Order';
-import DeliveryProblem from '../models/DeliveryProblem';
-import Deliveryman from '../models/Deliveryman';
-import Recipient from '../models/Recipient';
-
+import { Op } from 'sequelize';
 import Queue from '../../lib/Queue';
+import Order from '../models/Order';
+import Recipient from '../models/Recipient';
 import CancelOrder from '../jobs/CancelOrder';
+import Deliveryman from '../models/Deliveryman';
+import DeliveryProblem from '../models/DeliveryProblem';
 
 class CancelDeliveryController {
+  async index(req, res) {
+    const { page = 1 } = req.query;
+    const { id } = req.params;
+
+    const canceledOrders = await Order.findAll({
+      where: {
+        deliveryman_id: id,
+        canceled_at: {
+          [Op.ne]: null,
+        },
+      },
+      limit: 20,
+      offset: (page - 1) * 20,
+      attributes: [
+        'id',
+        'product',
+        'start_date',
+        'canceled_at',
+        'recipient_id',
+        'deliveryman_id',
+        'signature_id',
+      ],
+    });
+
+    return res.json(canceledOrders);
+  }
+
   async update(req, res) {
     const { id: problem_id } = req.params;
 
@@ -23,6 +50,12 @@ class CancelDeliveryController {
     if (order.canceled_at) {
       return res.status(401).json({
         error: 'This order has already been canceled.',
+      });
+    }
+
+    if (order.end_date) {
+      return res.status(401).json({
+        error: 'This order has already been delivered.',
       });
     }
 

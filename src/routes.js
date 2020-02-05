@@ -7,7 +7,7 @@ import RecipientController from './app/controllers/RecipientController';
 import DeliverymanController from './app/controllers/DeliverymanController';
 import OrderController from './app/controllers/OrderController';
 import WithdrawOrderController from './app/controllers/WithdrawOrderController';
-import ListOrderController from './app/controllers/ListOrderController';
+import OpenDeliveryController from './app/controllers/OpenDeliveryController';
 import DeliverOrderController from './app/controllers/DeliverOrderController';
 import DeliveryProblemController from './app/controllers/DeliveryProblemController';
 import CancelDeliveryController from './app/controllers/CancelDeliveryController';
@@ -24,24 +24,34 @@ const upload = multer(multerConfig);
 routes.post('/users', UserController.store);
 routes.post('/sessions', SessionController.store);
 
+// Withdrawing Order
 routes.put(
   '/deliveryman/:id/withdraw/:order_id',
   WithdrawOrderController.update
 );
 
+// Listing delivered orders
+routes.get('/deliveryman/:id/deliveries', DeliverOrderController.index);
+// Delivering Order
 routes.put('/deliveryman/:id/deliver/:order_id', DeliverOrderController.update);
 
-routes.get('/deliveryman/:id/deliveries', ListOrderController.index);
+// Listing open Orders
+routes.get('/deliveryman/:id/open', OpenDeliveryController.index);
 
-routes.get('/delivery/:id/problems', DeliveryProblemController.index);
-
-routes.get('/delivery/:id/problems/:order_id', DeliveryProblemController.show);
-
+// setting a problem
 routes.post(
   '/deliveryman/:id/problems/:order_id',
   DeliveryProblemController.store
 );
 
+// listing orders with problems from certain deliveryman
+routes.get('/delivery/:id/problems', DeliveryProblemController.index);
+
+// listing all problems from a specific order
+routes.get('/delivery/:id/problems/:order_id', DeliveryProblemController.show);
+
+// Cancel Order
+routes.get('/deliveryman/:id/canceled', CancelDeliveryController.index);
 routes.put('/problem/:id/cancel-delivery', CancelDeliveryController.update);
 
 routes.use(authMiddlaware);
