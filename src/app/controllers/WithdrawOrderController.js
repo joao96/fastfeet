@@ -1,6 +1,6 @@
 import * as Yup from 'yup';
 import { Op } from 'sequelize';
-import { startOfDay, endOfDay, parseISO } from 'date-fns';
+import { startOfDay, endOfDay, parseISO, isBefore } from 'date-fns';
 import Order from '../models/Order';
 
 class WithDrawOrderController {
@@ -20,6 +20,10 @@ class WithDrawOrderController {
       return res.status(401).json({
         error: "You don't have permission to withdraw this order.",
       });
+    }
+
+    if (isBefore(start_date, new Date())) {
+      return res.status(400).json({ error: 'Past dates are not permitted.' });
     }
 
     const parsedStartDate = parseISO(start_date);
