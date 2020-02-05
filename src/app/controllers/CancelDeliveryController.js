@@ -49,7 +49,7 @@ class CancelDeliveryController {
 
     if (order.canceled_at) {
       return res.status(401).json({
-        error: 'This order has already been canceled.',
+        error: 'This order has already been cancelled.',
       });
     }
 

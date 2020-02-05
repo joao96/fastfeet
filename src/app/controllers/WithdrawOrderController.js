@@ -23,6 +23,12 @@ class WithDrawOrderController {
 
     const order = await Order.findByPk(order_id);
 
+    if (order.canceled_at) {
+      return res.status(401).json({
+        error: 'This order has already been cancelled.',
+      });
+    }
+
     if (Number(id) !== order.deliveryman_id) {
       return res.status(401).json({
         error: "You don't have permission to withdraw this order.",
