@@ -7,7 +7,8 @@ import RecipientController from './app/controllers/RecipientController';
 import DeliverymanController from './app/controllers/DeliverymanController';
 import OrderController from './app/controllers/OrderController';
 import WithdrawOrderController from './app/controllers/WithdrawOrderController';
-import DeliveryController from './app/controllers/DeliveryController';
+import ListOrderController from './app/controllers/ListOrderController';
+import DeliverOrderController from './app/controllers/DeliverOrderController';
 
 import FileController from './app/controllers/FileController';
 
@@ -26,7 +27,9 @@ routes.put(
   WithdrawOrderController.update
 );
 
-routes.get('/deliveryman/:id/deliveries', DeliveryController.index);
+routes.put('/deliveryman/:id/deliver/:order_id', DeliverOrderController.update);
+
+routes.get('/deliveryman/:id/deliveries', ListOrderController.index);
 
 routes.use(authMiddlaware);
 
