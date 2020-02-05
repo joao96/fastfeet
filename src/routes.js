@@ -9,6 +9,8 @@ import OrderController from './app/controllers/OrderController';
 import WithdrawOrderController from './app/controllers/WithdrawOrderController';
 import ListOrderController from './app/controllers/ListOrderController';
 import DeliverOrderController from './app/controllers/DeliverOrderController';
+import DeliveryProblemController from './app/controllers/DeliveryProblemController';
+import CancelDeliveryController from './app/controllers/CancelDeliveryController';
 
 import FileController from './app/controllers/FileController';
 
@@ -31,8 +33,20 @@ routes.put('/deliveryman/:id/deliver/:order_id', DeliverOrderController.update);
 
 routes.get('/deliveryman/:id/deliveries', ListOrderController.index);
 
+routes.get('/delivery/:id/problems', DeliveryProblemController.index);
+
+routes.get('/delivery/:id/problems/:order_id', DeliveryProblemController.show);
+
+routes.post(
+  '/deliveryman/:id/problems/:order_id',
+  DeliveryProblemController.store
+);
+
+routes.put('/problem/:id/cancel-delivery', CancelDeliveryController.update);
+
 routes.use(authMiddlaware);
 
+// admin
 routes.put('/users', UserController.update);
 
 routes.post('/recipients', RecipientController.store);
