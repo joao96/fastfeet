@@ -1,6 +1,13 @@
 import * as Yup from 'yup';
 import { Op } from 'sequelize';
-import { startOfDay, endOfDay, parseISO, isBefore } from 'date-fns';
+import {
+  startOfDay,
+  endOfDay,
+  parseISO,
+  isBefore,
+  setHours,
+  isWithinInterval,
+} from 'date-fns';
 import Order from '../models/Order';
 
 class WithDrawOrderController {
@@ -27,6 +34,20 @@ class WithDrawOrderController {
     }
 
     const parsedStartDate = parseISO(start_date);
+
+    const startHourDate = setHours(parsedStartDate, 8);
+    const endHourDate = setHours(parsedStartDate, 18);
+
+    if (
+      !isWithinInterval(parsedStartDate, {
+        start: startHourDate,
+        end: endHourDate,
+      })
+    ) {
+      return res
+        .status(400)
+        .json({ error: 'You can only withdraw between 8 AM and 18 PM.' });
+    }
 
     const withdraws = await Order.findAll({
       where: {
